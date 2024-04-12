@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/chucker_doub_grid">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/overviewGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.28" />
+
+        <TextView
+            android:id="@+id/urlLabel"
+            style="@style/Chucker.TextAppearance.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/chucker_url"
+            app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/urlValue"
+            style="@style/Chucker.TextAppearance.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="https://example.com/path/to/resource?here=might_be_really_long" />
+
+        <TextView
+            android:id="@+id/ssl"
+            style="@style/Chucker.TextAppearance.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            android:text="@string/chucker_ssl"
+            app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/urlValue" />
+
+        <TextView
+            android:id="@+id/sslValue"
+            style="@style/Chucker.TextAppearance.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+            app:layout_constraintTop_toBottomOf="@id/urlValue"
+            tools:text="Yes" />
+
+        <TextView
+            android:id="@+id/timestampLabel"
+            style="@style/Chucker.TextAppearance.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            android:text="@string/chucker_extended_time"
+            app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ssl" />
+
+        <TextView
+            android:id="@+id/timestampValue"
+            style="@style/Chucker.TextAppearance.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+            app:layout_constraintTop_toBottomOf="@id/sslValue"
+            tools:text="05/02/17 11:52:49" />
+
+        <TextView
+            android:id="@+id/codeLabel"
+            style="@style/Chucker.TextAppearance.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            android:text="@string/chucker_extended_code"
+            app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/timestampLabel" />
+
+        <TextView
+            android:id="@+id/codeValue"
+            style="@style/Chucker.TextAppearance.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+            app:layout_constraintTop_toBottomOf="@id/timestampValue"
+            tools:text="42" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/codeGroup"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:constraint_referenced_ids="codeLabel,codeValue"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <TextView
+            android:id="@+id/reasonLabel"
+            style="@style/Chucker.TextAppearance.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            android:text="@string/chucker_extended_reason"
+            app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/codeLabel" />
+
+        <TextView
+            android:id="@+id/reasonValue"
+            style="@style/Chucker.TextAppearance.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+            app:layout_constraintTop_toBottomOf="@id/codeValue"
+            tools:text="42" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/reasonGroup"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:constraint_referenced_ids="reasonLabel,reasonValue"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <TextView
+            android:id="@+id/sizeLabel"
+            style="@style/Chucker.TextAppearance.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            android:text="@string/chucker_extended_size"
+            app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reasonLabel" />
+
+        <TextView
+            android:id="@+id/sizeValue"
+            style="@style/Chucker.TextAppearance.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+            app:layout_constraintTop_toBottomOf="@id/reasonValue"
+            tools:text="53 KB" />
+
+        <TextView
+            android:id="@+id/messageValue"
+            style="@style/Chucker.TextAppearance.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sizeValue"
+            tools:text="53 KB" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/messageGroup"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:constraint_referenced_ids="sizeLabel,sizeValue,messageValue"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="16dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

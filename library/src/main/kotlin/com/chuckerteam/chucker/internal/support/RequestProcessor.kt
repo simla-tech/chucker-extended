@@ -31,8 +31,6 @@ internal class RequestProcessor(
                 setGraphQlOperationName(it)
             }
             populateUrl(request.url)
-            graphQlDetected = isGraphQLRequest(this.graphQlOperationName, request)
-
             requestDate = System.currentTimeMillis()
             method = request.method
             requestContentType = request.body?.contentType()?.toString()
@@ -67,6 +65,10 @@ internal class RequestProcessor(
         if (decodedContent != null && limitingSource.isThresholdReached) {
             transaction.requestBody += context.getString(R.string.chucker_body_content_truncated)
         }
+        if (transaction.graphQlOperationName.isNullOrBlank()) {
+            transaction.graphQlOperationName = FormatUtils.extractOperationName(transaction.requestBody)
+        }
+        transaction.graphQlDetected = transaction.graphQlOperationName.isNullOrBlank().not()
     }
 
     private fun decodePayload(request: Request, body: ByteString) = bodyDecoders.asSequence()
@@ -79,9 +81,4 @@ internal class RequestProcessor(
                 null
             }
         }.firstOrNull()
-
-    private fun isGraphQLRequest(graphQLOperationName: String?, request: Request) =
-        graphQLOperationName != null ||
-            request.url.pathSegments.contains("graphql") ||
-            request.url.host.contains("graphql")
 }

@@ -212,7 +212,7 @@ internal class HttpTransaction(
     private fun formatBody(body: String, contentType: String?): String {
         return when {
             contentType.isNullOrBlank() -> body
-            contentType.contains("json", ignoreCase = true) -> FormatUtils.formatJson(body)
+            contentType.contains("json", ignoreCase = true) -> FormatUtils.formatJsonWithGqlQuery(body)
             contentType.contains("xml", ignoreCase = true) -> FormatUtils.formatXml(body)
             contentType.contains("x-www-form-urlencoded", ignoreCase = true) ->
                 FormatUtils.formatUrlEncodedForm(body)

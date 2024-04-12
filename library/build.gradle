@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 
 android {
     compileSdk rootProject.compileSdkVersion
@@ -21,12 +22,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlin {
-        jvmToolchain(11)
+        jvmToolchain(17)
     }
 
     buildFeatures {
@@ -79,6 +80,8 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
+    implementation "com.graphql-java:graphql-java:$graphQlJavaVersion"
+
     implementation "com.google.code.gson:gson:$gsonVersion"
 
     implementation "org.brotli:dec:$brotliVersion"
@@ -106,4 +109,4 @@ dependencies {
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
-apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
+//apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')

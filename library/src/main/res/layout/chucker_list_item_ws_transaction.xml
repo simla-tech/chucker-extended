@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="@dimen/chucker_base_grid">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <ImageView
+        android:id="@+id/direction"
+        android:layout_width="@dimen/chucker_item_size"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/chucker_base_grid"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/chucker_extended_ic_upward_white24"
+        tools:tint="#0F0"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:textAppearance="@style/Chucker.TextAppearance.ListItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/direction"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="SEND_MESSAGE" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/chucker_half_grid"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/type"
+        app:layout_constraintTop_toBottomOf="@+id/type"
+        app:layout_goneMarginStart="0dp"
+        tools:text="{type:connection_ack, type:connection_ack, type:connection_ack, type:connection_ack, type:connection_ack}" />
+
+    <TextView
+        android:id="@+id/datetime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="18:29:07 PM" />
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/message"
+        tools:text="16.45 KB" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

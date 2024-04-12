@@ -28,12 +28,12 @@ import kotlinx.coroutines.withContext
  * @param retentionPeriod Set the retention period for HTTP transaction data captured
  * by this collector. The default is one week.
  */
-public class ChuckerCollector @JvmOverloads constructor(
+public open class ChuckerCollector @JvmOverloads constructor(
     context: Context,
     public var showNotification: Boolean = true,
     retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 ) {
-    private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
+    protected val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
     private val scope = MainScope()
 

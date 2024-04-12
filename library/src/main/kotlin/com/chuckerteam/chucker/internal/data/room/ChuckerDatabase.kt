@@ -5,11 +5,18 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.WsTransaction
 
-@Database(entities = [HttpTransaction::class], version = 9, exportSchema = false)
+@Database(
+    entities = [
+        HttpTransaction::class,
+        WsTransaction::class
+    ], version = 10, exportSchema = true
+)
 internal abstract class ChuckerDatabase : RoomDatabase() {
 
     abstract fun transactionDao(): HttpTransactionDao
+    abstract fun wsDao(): WsTransactionDao
 
     companion object {
         private const val DB_NAME = "chucker.db"

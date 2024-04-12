@@ -3,6 +3,8 @@ package com.chuckerteam.chucker.internal.support
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
+import graphql.language.AstPrinter
+import graphql.parser.Parser
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
 import org.xml.sax.SAXParseException
@@ -28,6 +30,10 @@ internal object FormatUtils {
 
     private const val SI_MULTIPLE = 1000
     private const val BASE_TWO_MULTIPLE = 1024
+
+    private val gqlQueryRegex = Regex("""(?<="query":"|"query": ")(.*)(?=")""")
+    private val gqlOperationNameRegex = Regex("""(?<="operationName":"|"operationName": ")(.+?)(?=")""")
+    private val bracketOrSpaceRegex = Regex("""([^({\s]+)""")
 
     fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
         return httpHeaders?.joinToString(separator = "") { header ->
@@ -107,6 +113,49 @@ internal object FormatUtils {
             form
         } catch (ignore: UnsupportedEncodingException) {
             form
+        }
+    }
+
+    fun formatJsonWithGqlQuery(text: String): String {
+        val json = formatJson(text)
+        val matchResult = gqlQueryRegex.find(json)
+        return if (matchResult != null) {
+            val parser = Parser()
+            val doc: graphql.language.Document? = try {
+                parser.parseDocument(matchResult.value)
+            } catch (e: Exception) {
+                null
+            }
+            if (doc != null) {
+                val formattedGql = AstPrinter.printAst(doc)
+                json.replace(gqlQueryRegex, formattedGql)
+            } else {
+                json
+            }
+        } else json
+    }
+
+
+    fun extractOperationName(json: String?): String? {
+        return if (json == null) {
+            null
+        } else {
+            val matchResult = gqlOperationNameRegex.find(json)
+            matchResult?.value
+        }
+    }
+
+    fun extractGqlRoot(text: String?, prefix: String = "\u0020\u0020\u0020"): String? {
+        return if (text == null) {
+            null
+        } else {
+            val matchResult = gqlQueryRegex.find(text)
+            if (matchResult != null) {
+                val gql = matchResult.value
+                val gqlOp = bracketOrSpaceRegex.find(gql)
+                val api = bracketOrSpaceRegex.find(gql.substringAfter('{', ""))
+                "$prefix{${gqlOp?.value} {${api?.value}} }"
+            } else null
         }
     }
 }

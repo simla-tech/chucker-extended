@@ -12,25 +12,39 @@ import androidx.core.content.ContextCompat
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.WsTransaction
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
+import com.chuckerteam.chucker.internal.ui.MainActivity
 import java.util.HashSet
 
 internal class NotificationHelper(val context: Context) {
 
     companion object {
         private const val TRANSACTIONS_CHANNEL_ID = "chucker_transactions"
+        private const val WS_TRANSACTIONS_CHANNEL_ID = "chucker_ws_transactions"
 
         private const val TRANSACTION_NOTIFICATION_ID = 1138
+        private const val WS_TRANSACTION_NOTIFICATION_ID = 2138
 
         private const val BUFFER_SIZE = 10
-        private const val INTENT_REQUEST_CODE = 11
+        private const val INTENT_REQUEST_CODE_TRANSACTIONS = 11
+        private const val INTENT_REQUEST_CODE_WS_TRANSACTIONS = 12
         private val transactionBuffer = LongSparseArray<HttpTransaction>()
         private val transactionIdsSet = HashSet<Long>()
+        private val wsTransactionBuffer = LongSparseArray<WsTransaction>()
+        private val wsTransactionIdsSet = HashSet<Long>()
 
         fun clearBuffer() {
             synchronized(transactionBuffer) {
                 transactionBuffer.clear()
                 transactionIdsSet.clear()
+            }
+        }
+
+        fun clearWsBuffer() {
+            synchronized(wsTransactionBuffer) {
+                wsTransactionBuffer.clear()
+                wsTransactionIdsSet.clear()
             }
         }
     }
@@ -42,7 +56,20 @@ internal class NotificationHelper(val context: Context) {
         PendingIntent.getActivity(
             context,
             TRANSACTION_NOTIFICATION_ID,
-            Chucker.getLaunchIntent(context),
+            Chucker.getLaunchIntent(context).apply {
+                putExtra(MainActivity.EXTRA_SCREEN, MainActivity.SCREEN_HTTP)
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or immutableFlag()
+        )
+    }
+
+    private val wsTransactionsScreenIntent by lazy {
+        PendingIntent.getActivity(
+            context,
+            WS_TRANSACTION_NOTIFICATION_ID,
+            Chucker.getLaunchIntent(context).apply {
+                putExtra(MainActivity.EXTRA_SCREEN, MainActivity.SCREEN_WEBSOCKET)
+            },
             PendingIntent.FLAG_UPDATE_CURRENT or immutableFlag()
         )
     }
@@ -74,6 +101,22 @@ internal class NotificationHelper(val context: Context) {
         }
     }
 
+    private fun addToBuffer(transaction: WsTransaction) {
+        if (transaction.id == 0L) {
+            // Don't store Transactions with an invalid ID (0).
+            // Transaction with an Invalid ID will be shown twice in the notification
+            // with both the invalid and the valid ID and we want to avoid this.
+            return
+        }
+        synchronized(wsTransactionBuffer) {
+            wsTransactionIdsSet.add(transaction.id)
+            wsTransactionBuffer.put(transaction.id, transaction)
+            if (wsTransactionBuffer.size() > BUFFER_SIZE) {
+                wsTransactionBuffer.removeAt(0)
+            }
+        }
+    }
+
     private fun canShowNotifications(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             notificationManager.areNotificationsEnabled()
@@ -93,7 +136,7 @@ internal class NotificationHelper(val context: Context) {
                     .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))
                     .setAutoCancel(true)
-                    .addAction(createClearAction())
+                    .addAction(createClearAction(ClearDatabaseService.ClearAction.Transaction))
             val inboxStyle = NotificationCompat.InboxStyle()
             synchronized(transactionBuffer) {
                 var count = 0
@@ -118,13 +161,55 @@ internal class NotificationHelper(val context: Context) {
         }
     }
 
-    private fun createClearAction(): NotificationCompat.Action {
+    fun show(transaction: WsTransaction) {
+        addToBuffer(transaction)
+        if (!BaseChuckerActivity.isInForeground) {
+            val builder =
+                NotificationCompat.Builder(context, WS_TRANSACTIONS_CHANNEL_ID)
+                    .setContentIntent(wsTransactionsScreenIntent)
+                    .setLocalOnly(true)
+                    .setSmallIcon(R.drawable.chucker_ic_transaction_notification)
+                    .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
+                    .setContentTitle(context.getString(R.string.chucker_extended_websocket_notification_title))
+                    .setAutoCancel(true)
+                    .addAction(createClearAction(ClearDatabaseService.ClearAction.WsTransaction))
+            val inboxStyle = NotificationCompat.InboxStyle()
+            synchronized(wsTransactionBuffer) {
+                var count = 0
+                (wsTransactionBuffer.size() - 1 downTo 0).forEach { i ->
+                    val bufferedTransaction = wsTransactionBuffer.valueAt(i)
+                    if ((bufferedTransaction != null) && count < BUFFER_SIZE) {
+                        if (count == 0) {
+                            builder.setContentText(bufferedTransaction.notificationText)
+                        }
+                        inboxStyle.addLine(bufferedTransaction.notificationText)
+                    }
+                    count++
+                }
+                builder.setStyle(inboxStyle)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    builder.setSubText(wsTransactionIdsSet.size.toString())
+                } else {
+                    builder.setNumber(wsTransactionIdsSet.size)
+                }
+            }
+            notificationManager.notify(WS_TRANSACTION_NOTIFICATION_ID, builder.build())
+        }
+    }
+
+    private fun createClearAction(clearAction: ClearDatabaseService.ClearAction): NotificationCompat.Action {
         val clearTitle = context.getString(R.string.chucker_clear)
         val clearTransactionsBroadcastIntent =
-            Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
+            Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java).apply {
+                putExtra(ClearDatabaseService.EXTRA_ITEM_TO_CLEAR, clearAction)
+            }
         val pendingBroadcastIntent = PendingIntent.getBroadcast(
             context,
-            INTENT_REQUEST_CODE,
+            if (clearAction is ClearDatabaseService.ClearAction.Transaction) {
+                INTENT_REQUEST_CODE_TRANSACTIONS
+            } else {
+                INTENT_REQUEST_CODE_WS_TRANSACTIONS
+            },
             clearTransactionsBroadcastIntent,
             PendingIntent.FLAG_ONE_SHOT or immutableFlag()
         )
@@ -135,8 +220,17 @@ internal class NotificationHelper(val context: Context) {
         )
     }
 
+    fun dismissTransactionsNotification() {
+        notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
+    }
+
+    fun dismissWsTransactionsNotification() {
+        notificationManager.cancel(WS_TRANSACTION_NOTIFICATION_ID)
+    }
+
     fun dismissNotifications() {
         notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
+        notificationManager.cancel(WS_TRANSACTION_NOTIFICATION_ID)
     }
 
     private fun immutableFlag() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

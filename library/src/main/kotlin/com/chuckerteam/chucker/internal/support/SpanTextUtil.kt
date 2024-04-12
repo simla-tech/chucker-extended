@@ -80,7 +80,7 @@ public class SpanTextUtil(context: Context) {
     }
     public fun spanJson(input: CharSequence): SpannableStringBuilder {
         // First handle the pretty printing step via gson built-in support
-        val prettyPrintedInput = FormatUtils.formatJson(input.toString())
+        val prettyPrintedInput = FormatUtils.formatJsonWithGqlQuery(input.toString())
 
         var lastTokenType: TokenType? = null
         var index = 0

@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.sample
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.ExtendedChuckerCollector
 import com.chuckerteam.chucker.api.RetentionManager
 import okhttp3.Call
 import okhttp3.Callback
@@ -17,7 +18,7 @@ fun createOkHttpClient(
     context: Context,
     interceptorTypeProvider: InterceptorType.Provider
 ): OkHttpClient {
-    val collector = ChuckerCollector(
+    val collector = ExtendedChuckerCollector(
         context = context,
         showNotification = true,
         retentionPeriod = RetentionManager.Period.ONE_HOUR

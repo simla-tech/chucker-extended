@@ -2,10 +2,14 @@
 <resources>
     <string name="chucker_name">Chucker</string>
     <string name="chucker_http_notification_title">Recording HTTP activity</string>
+    <string name="chucker_extended_websocket_notification_title">Recording WebSocket activity</string>
+    <string name="chucker_tab_http">HTTP</string>
+    <string name="chucker_tab_web_socket">WebSocket</string>
     <string name="chucker_clear">Clear</string>
     <string name="chucker_encode_url">Encode URL</string>
     <string name="chucker_cancel">Cancel</string>
     <string name="chucker_overview">Overview</string>
+    <string name="chucker_extended_message">Message</string>
     <string name="chucker_request">Request</string>
     <string name="chucker_response">Response</string>
     <string name="chucker_url">URL</string>
@@ -13,12 +17,17 @@
     <string name="chucker_protocol">Protocol</string>
     <string name="chucker_status">Status</string>
     <string name="chucker_ssl">SSL</string>
+    <string name="chucker_extended_type">Type</string>
+    <string name="chucker_extended_code">Code</string>
+    <string name="chucker_extended_reason">Reason</string>
     <string name="chucker_tls_version">TLS version</string>
     <string name="chucker_tls_cipher_suite">Cipher Suite</string>
     <string name="chucker_request_time">Request time</string>
+    <string name="chucker_extended_time">Timestamp</string>
     <string name="chucker_response_time">Response time</string>
     <string name="chucker_duration">Duration</string>
     <string name="chucker_request_size">Request size</string>
+    <string name="chucker_extended_size">Message size</string>
     <string name="chucker_response_size">Response size</string>
     <string name="chucker_total_size">Total size</string>
     <string name="chucker_yes">Yes</string>
@@ -49,6 +58,7 @@
     <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
     <string name="chucker_export_text_http_confirmation">Do you want to export all network transactions as a text file?</string>
     <string name="chucker_export_har_http_confirmation">Do you want to export all network transactions as a .har file?</string>
+    <string name="chucker_export_http_confirmation">Do you want to export all network transactions?</string>
     <string name="chucker_export_separator">==================</string>
     <string name="chucker_export_prefix">/* Export Start */</string>
     <string name="chucker_export_postfix">/*  Export End  */</string>
@@ -64,4 +74,7 @@
     <string name="chucker_graphql_operation_is_empty"> &lt;Unable to discover GraphQL operation name&gt;</string>
     <string name="chucker_scroll_buttons_for_search">Buttons to scroll the search items</string>
     <string name="chucker_search_results_title">Search Results:</string>
+    <string name="chucker_extended_websocket_notification_category">WebSocket messages</string>
+    <string name="chucker_extended_transaction_not_ready">The transaction isn\'t ready for sharing or saving</string>
+    <string name="chucker_ws_tutorial">This tab shows WebSocket requests recorded with WrappedWebSocket.</string>
 </resources>

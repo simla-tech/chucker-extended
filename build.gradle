@@ -31,6 +31,9 @@ buildscript {
         // Apollo
         apolloVersion = '3.8.2'
 
+        // GraphGl java for query formatting
+        graphQlJavaVersion = '16.2'
+
         // Testing
         androidxTestCoreVersion = '1.5.0'
         junitGradlePluignVersion = '1.9.3.0'
@@ -79,11 +82,6 @@ allprojects {
     version = VERSION_NAME
     group = GROUP
 
-    repositories {
-        google()
-        mavenCentral()
-    }
-
     tasks.withType(Test) {
         testLogging {
             events "skipped", "failed", "passed"
@@ -106,10 +104,4 @@ ext {
     minSdkVersion = 21
     targetSdkVersion = 33
     compileSdkVersion = 33
-}
-
-nexusStaging {
-    username = findProperty("NEXUS_USERNAME")
-    password = findProperty("NEXUS_PASSWORD")
-    stagingProfileId = "ea09119de9f4"
 }

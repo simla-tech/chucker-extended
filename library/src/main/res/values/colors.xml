@@ -33,5 +33,10 @@
     <color name="chucker_json_elements_color">#474747</color>
     <color name="chucker_json_boolean_color">#2F99AA</color>
 
-
+    <color name="chucker_extended_ws_outbound">#009E09</color>
+    <color name="chucker_extended_ws_outbound_bg">#e4ffc7</color>
+    <color name="chucker_extended_ws_inbound">#0D47A1</color>
+    <color name="chucker_extended_ws_inbound_bg">#daeeff</color>
+    <color name="chucker_extended_ws_error">#B71C1C</color>
+    <color name="chucker_extended_ws_error_bg">#B56363</color>
 </resources>

@@ -12,6 +12,7 @@ import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 internal object RepositoryProvider {
 
     private var transactionRepository: HttpTransactionRepository? = null
+    private var wsTransactionRepository: WsTransactionRepository? = null
 
     fun transaction(): HttpTransactionRepository {
         return checkNotNull(transactionRepository) {
@@ -19,13 +20,20 @@ internal object RepositoryProvider {
         }
     }
 
+    fun ws(): WsTransactionRepository {
+        return checkNotNull(wsTransactionRepository) {
+            "You can't access the web socket transaction repository if you don't initialize it!"
+        }
+    }
+
     /**
      * Idempotent method. Must be called before accessing the repositories.
      */
     fun initialize(applicationContext: Context) {
-        if (transactionRepository == null) {
+        if (transactionRepository == null || wsTransactionRepository == null) {
             val db = ChuckerDatabase.create(applicationContext)
             transactionRepository = HttpTransactionDatabaseRepository(db)
+            wsTransactionRepository = WsTransactionDatabaseRepository(db)
         }
     }
 
