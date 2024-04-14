@@ -1,7 +1,7 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-def versionName = "1.0-SNAPSHOT"
+def versionName = "1.0"
 
 publishing {
     publications {
