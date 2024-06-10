@@ -128,7 +128,7 @@ internal object FormatUtils {
             }
             if (doc != null) {
                 val formattedGql = AstPrinter.printAst(doc)
-                json.replace(gqlQueryRegex, formattedGql)
+                json.replace(matchResult.value, formattedGql)
             } else {
                 json
             }
