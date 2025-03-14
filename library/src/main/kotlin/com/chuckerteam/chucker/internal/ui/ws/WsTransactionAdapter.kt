@@ -17,7 +17,8 @@ import com.chuckerteam.chucker.internal.data.entity.WsTransaction.TransactionTyp
 import com.chuckerteam.chucker.internal.data.entity.WsTransactionTuple
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.ui.transaction.DirectionResources
-import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 internal class WsTransactionAdapter internal constructor(
     context: Context,
@@ -33,6 +34,8 @@ internal class WsTransactionAdapter internal constructor(
         ContextCompat.getColor(context, R.color.chucker_extended_ws_inbound_bg)
     private val colorOutboundBg: Int =
         ContextCompat.getColor(context, R.color.chucker_extended_ws_outbound_bg)
+
+    private val dateFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
 
     override fun getItemCount(): Int = transactions.size
 
@@ -79,15 +82,17 @@ internal class WsTransactionAdapter internal constructor(
                 type.setTextColor(if (transaction.type.isError()) colorError else colorDefault)
                 if (transaction.textMessage != null) {
                     message.visibility = View.VISIBLE
-                    message.text = FormatUtils.extractGqlRoot(transaction.textMessage, "")
-                        ?: transaction.textMessage
-                    // size.visibility = View.VISIBLE
-                    // size.text = transaction.sizeMessageString
+                    message.text = FormatUtils.extractOperationName(transaction.textMessage)
+                        ?: FormatUtils.extractTypeName(transaction.textMessage)
+                        ?: FormatUtils.extractGqlRoot(transaction.textMessage, "")
+                            ?: transaction.textMessage
+                     size.visibility = View.VISIBLE
+                     size.text = transaction.sizeMessageString
                 } else {
                     message.visibility = View.GONE
                     size.visibility = View.GONE
                 }
-                datetime.text = DateFormat.getTimeInstance().format(transaction.timestamp)
+                datetime.text = dateFormat.format(transaction.timestamp)
 
                 direction.setDirectionImage(transaction.type)
                 root.setBackgroundColor(transaction.type)

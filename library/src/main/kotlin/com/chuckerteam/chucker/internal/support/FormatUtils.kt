@@ -33,6 +33,7 @@ internal object FormatUtils {
 
     private val gqlQueryRegex = Regex("""(?<="query":"|"query": ")(.*)(?=")""")
     private val gqlOperationNameRegex = Regex("""(?<="operationName":"|"operationName": ")(.+?)(?=")""")
+    private val gqlTypeNameRegex = Regex("""(?<="__typename":"|"__typename": ")(.+?)(?=")""")
     private val bracketOrSpaceRegex = Regex("""([^({\s]+)""")
 
     fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
@@ -137,12 +138,11 @@ internal object FormatUtils {
 
 
     fun extractOperationName(json: String?): String? {
-        return if (json == null) {
-            null
-        } else {
-            val matchResult = gqlOperationNameRegex.find(json)
-            matchResult?.value
-        }
+        return json?.let { gqlOperationNameRegex.find(json)?.value }
+    }
+
+    fun extractTypeName(json: String?): String? {
+        return json?.let { gqlTypeNameRegex.find(json)?.value }
     }
 
     fun extractGqlRoot(text: String?, prefix: String = "\u0020\u0020\u0020"): String? {

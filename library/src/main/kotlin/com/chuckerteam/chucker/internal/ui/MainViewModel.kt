@@ -50,7 +50,7 @@ internal class MainViewModel : ViewModel() {
 
     suspend fun getAllTransactions(): List<HttpTransaction> = RepositoryProvider.transaction().getAllTransactions()
 
-    suspend fun getAllWsTransactions(): List<WsTransaction>? =
+    suspend fun getAllWsTransactions(): List<WsTransaction> =
         RepositoryProvider.ws().getAllTransactions()
 
     fun updateItemsFilter(searchQuery: String) {
