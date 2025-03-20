@@ -21,7 +21,9 @@ import com.chuckerteam.chucker.internal.support.WsTransactionListDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal class WsTransactionListFragment :
     Fragment(),
@@ -42,7 +44,7 @@ internal class WsTransactionListFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         transactionsBinding =
             ChuckerFragmentWsTransactionListBinding.inflate(inflater, container, false)
 
@@ -76,7 +78,7 @@ internal class WsTransactionListFragment :
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.chucker_transactions_list, menu)
+        inflater.inflate(R.menu.chucker_ws_transactions_list, menu)
         setUpSearch(menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -127,24 +129,28 @@ internal class WsTransactionListFragment :
         WsTransactionActivity.start(requireActivity(), transactionId)
     }
 
-    private fun exportTransactions() = lifecycleScope.launch {
-        val transactions = viewModel.getAllWsTransactions()
-        if (transactions.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT)
-                .show()
-            return@launch
-        }
-
-        val sharableTransactions = WsTransactionListDetailsSharable(transactions)
-        val shareIntent = sharableTransactions.shareAsFile(
-            activity = requireActivity(),
-            fileName = EXPORT_FILE_NAME,
-            intentTitle = getString(R.string.chucker_share_all_transactions_title),
-            intentSubject = getString(R.string.chucker_share_all_transactions_subject),
-            clipDataLabel = "transactions"
-        )
-        if (shareIntent != null) {
-            startActivity(shareIntent)
+    private fun exportTransactions() {
+        lifecycleScope.launch {
+            val transactions = viewModel.getAllWsTransactions()
+            if (transactions.isEmpty()) {
+                Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            val sharableTransactions = WsTransactionListDetailsSharable(transactions)
+            val shareIntent = withContext(Dispatchers.IO) {
+                sharableTransactions.shareAsFile(
+                    activity = requireActivity(),
+                    fileName = EXPORT_FILE_NAME,
+                    intentTitle = getString(R.string.chucker_share_all_transactions_title),
+                    intentSubject = getString(R.string.chucker_share_all_transactions_subject),
+                    clipDataLabel = "transactions"
+                )
+            }
+            if (shareIntent != null) {
+                startActivity(shareIntent)
+            } else {
+                Toast.makeText(requireContext(), R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

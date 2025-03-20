@@ -10,11 +10,13 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentWsTransactionMessageBinding
 import com.chuckerteam.chucker.internal.data.entity.WsTransaction
 import com.chuckerteam.chucker.internal.support.FormatUtils
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 internal class WsTransactionMessageFragment : Fragment() {
 
     private val viewModel: WsTransactionViewModel by activityViewModels { WsTransactionViewModelFactory() }
-
+    private val dateFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
     private lateinit var messageBinding: ChuckerFragmentWsTransactionMessageBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +28,7 @@ internal class WsTransactionMessageFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         messageBinding =
             ChuckerFragmentWsTransactionMessageBinding.inflate(inflater, container, false)
         return messageBinding.root
@@ -44,7 +46,7 @@ internal class WsTransactionMessageFragment : Fragment() {
                 true -> sslValue.setText(R.string.chucker_yes)
                 false -> sslValue.setText(R.string.chucker_no)
             }
-            timestampValue.text = transaction?.timestampString
+            timestampValue.text = transaction?.timestamp?.let { dateFormat.format(it) }
             if (transaction?.code != null) {
                 codeValue.text = transaction.code.toString()
             } else {
