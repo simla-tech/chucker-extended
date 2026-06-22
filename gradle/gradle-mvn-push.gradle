@@ -40,17 +40,12 @@ publishing {
         }
     }
     repositories {
+        // локальный репозиторий
+        // собранный артефакт надо будет скачать и загрузить в maven central repository (https://central.sonatype.com/publishing)
+        // документация: https://central.sonatype.org/publish/publish-portal-upload/
         maven {
-            name = "main"
-            url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            credentials {
-                username = findProperty("ossrhUsername") ?: System.getenv("OSSRH_USERNAME")
-                password = findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
-            }
-        }
-        maven {
-            name = 'local'
-            url = "${findProperty("localMavenPath")}"
+            name = "localRepo"
+            url = uri(layout.buildDirectory.dir("repo"))
         }
     }
 }

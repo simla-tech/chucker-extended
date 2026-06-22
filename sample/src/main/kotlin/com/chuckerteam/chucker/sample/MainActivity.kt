@@ -1,11 +1,13 @@
 package com.chuckerteam.chucker.sample
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
@@ -86,6 +88,13 @@ class MainActivity : AppCompatActivity() {
                 .penaltyDeath()
                 .build()
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val isLightTheme = resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK != Configuration.UI_MODE_NIGHT_YES
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = isLightTheme
     }
 
     private fun launchChuckerDirectly() {
